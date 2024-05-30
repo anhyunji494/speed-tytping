@@ -4,11 +4,13 @@ import RestartButton from "./components/RestartButton";
 import Results from "./components/Results";
 import UserTypings from "./components/UserTypings";
 import useEngine from "./hooks/useEngine";
+import { calculateAccuracyPercentage } from "./utils/helpers";
 
 const words = faker.random.words(10);
 
 function App() {
-  const { state, words, timeLeft, typed } = useEngine();
+  const { state, words, timeLeft, typed, errors, restart, totalTyped } =
+    useEngine();
 
   return (
     <>
@@ -23,13 +25,14 @@ function App() {
       </WordsContainer>
       <RestartButton
         className={"m-auto mt-10 text-slate-500"}
-        onRestart={() => null}
+        onRestart={restart}
       />
       <Results
+        state={state}
         className="mt-10"
-        errors={10}
-        accuracyPercentage={100}
-        total={200}
+        errors={errors}
+        accuracyPercentage={calculateAccuracyPercentage(errors, totalTyped)}
+        total={totalTyped}
       />
     </>
   );
@@ -37,7 +40,7 @@ function App() {
 
 const WordsContainer = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div className="relative text-3xl leading-relaxed break-all mt-3">
+    <div className="relative mt-3 text-3xl leading-relaxed break-all">
       {children}
     </div>
   );
